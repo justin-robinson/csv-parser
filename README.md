@@ -2,7 +2,7 @@
 
 Don't use this. Use go's built in csv parser https://golang.org/pkg/encoding/csv/
 
-handles double quoted, comma delimited csv files
+handles comma delimited csv files and does not checked for escaped characters
 
 ```golang
 package main
