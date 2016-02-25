@@ -6,13 +6,23 @@ import (
 	"strings"
 )
 
-type CsvParser struct {
-}
+type CsvParser struct {}
 
-func (c *CsvParser) Parse(fileName string) ([][]string, error) {
+
+func parse(scanner *bufio.Scanner) ([][]string) {
 
 	// where are parsed lines will be stored
 	parsed := [][]string{}
+
+	// add each line to our parsed array
+	for i:=0; scanner.Scan(); i++ {
+		parsed = insert(parsed, i, strings.Split(scanner.Text(), ","))
+	}
+
+	return parsed
+}
+
+func (c *CsvParser) ParseFile(fileName string) ([][]string, error) {
 
 	// open file
 	file, err:= os.Open(fileName)
@@ -22,15 +32,13 @@ func (c *CsvParser) Parse(fileName string) ([][]string, error) {
 		return [][]string{}, err
 	}
 
-	// create a scanner to scan the csv
-	scanner := bufio.NewScanner(file)
+	return parse(bufio.NewScanner(file)), nil
+}
 
-	// add each line to our parsed array
-	for i:=0; scanner.Scan(); i++ {
-		parsed = insert(parsed, i, strings.Split(scanner.Text(), ","))
-	}
 
-	return parsed, nil
+func (c *CsvParser) ParseString(input string) ([][]string) {
+
+	return parse(bufio.NewScanner(strings.NewReader(input)))
 }
 
 func insert(original [][]string, position int, value []string) [][]string {
