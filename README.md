@@ -18,7 +18,7 @@ func main () {
 	parser := csv_parser.CsvParser{}
 
     // err from os.Open
-	parsed, err := parser.Parse("/some/file.csv")
+	parsed, err := parser.ParseFile("/some/file.csv")
 
     
 	if err != nil {
