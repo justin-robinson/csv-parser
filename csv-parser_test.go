@@ -6,15 +6,17 @@ import (
 
 var parser = CsvParser{}
 
+var rawText = `"name","height","position","team"
+"Bill Murray","3.7 gophers","grounds keeper","Bushwood Country Club"
+"Jimmy Johnson","6","jsadklfadklvx","Cahbois"`
+
 func TestParseString(t *testing.T) {
 	cases := []struct {
 		in string
 		want [][]string
 	}{
 		{
-			`"name","height","position","team"
-"Bill Murray","3.7 gophers","grounds keeper","Bushwood Country Club"
-"Jimmy Johnson","6","jsadklfadklvx","Cahbois"`,
+			rawText,
 			[][]string{
 				[]string{"\"name\"", "\"height\"", "\"position\"", "\"team\""},
 				[]string{"\"Bill Murray\"", "\"3.7 gophers\"", "\"grounds keeper\"", "\"Bushwood Country Club\""},
@@ -102,5 +104,19 @@ func TestParseFile(t *testing.T) {
 				t.Errorf("ParseFile == %q, want %q", value, want[i][j])
 			}
 		}
+	}
+}
+
+func BenchmarkParseString(b *testing.B) {
+
+	for i := 0; i < b.N; i++ {
+		parser.ParseString(rawText)
+	}
+}
+
+func BenchmarkParseFile(b *testing.B) {
+
+	for i := 0; i < b.N; i++ {
+		parser.ParseFile("sample_large.csv")
 	}
 }
