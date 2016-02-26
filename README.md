@@ -19,6 +19,7 @@ package main
 import (
 	"fmt"
 	"github.com/justin-robinson/csv-parser"
+	"log"
 )
 
 func main () {
@@ -31,14 +32,12 @@ func main () {
         log.Fatal(err)
     }
 
-    parser := CsvParser{
-        bufio.NewScanner(file),
-    }
+    parser := csv_parser.NewCsvParser(file)
 
     parsed := parser.Parse()
     
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 
     // print out header row

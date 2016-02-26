@@ -2,15 +2,16 @@ package csv_parser
 
 import (
 	"bufio"
+	"io"
 	"strings"
 )
 
-type CsvParser struct {
+type csvParser struct {
 	scanner *bufio.Scanner
 }
 
 
-func (c *CsvParser) Parse() ([][]string) {
+func (c *csvParser) Parse() ([][]string) {
 
 	// where are parsed lines will be stored
 	parsed := [][]string{}
@@ -21,4 +22,10 @@ func (c *CsvParser) Parse() ([][]string) {
 	}
 
 	return parsed
+}
+
+func NewCsvParser(r io.Reader) *csvParser {
+	return &csvParser{
+		bufio.NewScanner(r),
+	}
 }

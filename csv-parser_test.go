@@ -6,7 +6,6 @@ import (
 	"os"
 	"log"
 	"strings"
-	"bufio"
 )
 
 var rawText = `"name","height","position","team"
@@ -32,9 +31,7 @@ func TestParseString(t *testing.T) {
 	}
 
 	for _, c := range cases {
-		parser := CsvParser{
-			bufio.NewScanner(strings.NewReader(c.in)),
-		}
+		parser := NewCsvParser(strings.NewReader(c.in))
 		got := parser.Parse()
 		for i, row := range got {
 			for j, value := range row {
@@ -56,9 +53,7 @@ func TestParseFile(t *testing.T) {
 		log.Fatal(err)
 	}
 
-	parser := CsvParser{
-		bufio.NewScanner(file),
-	}
+	parser := NewCsvParser(file)
 
 	got := parser.Parse()
 
@@ -130,9 +125,7 @@ func TestParseFile(t *testing.T) {
 
 func BenchmarkParseString(b *testing.B) {
 
-	parser := CsvParser{
-		bufio.NewScanner(strings.NewReader(rawText)),
-	}
+	parser := NewCsvParser(strings.NewReader(rawText))
 
 	for i := 0; i < b.N; i++ {
 		parser.Parse()
@@ -149,9 +142,7 @@ func BenchmarkParseFile(b *testing.B) {
 		log.Fatal(err)
 	}
 
-	parser := CsvParser{
-		bufio.NewScanner(file),
-	}
+	parser := NewCsvParser(file)
 
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
