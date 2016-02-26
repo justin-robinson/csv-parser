@@ -11,9 +11,9 @@ BenchmarkGoParseFile-4	 1000000	      1021 ns/op
 ok  	github.com/justin-robinson/csv-parser	8.982s
 ```
 
-handles comma delimited csv files and does not checked for escaped characters
+handles comma delimited csv files and does not checked for escaped characters.
 
-```golang
+```go
 package main
 
 import (
@@ -23,12 +23,20 @@ import (
 
 func main () {
 
-    // create a parser
-	parser := csv_parser.CsvParser{}
+    // open file
+    file, err:= os.Open("sample.csv")
+
+    // return err if we have one
+    if err != nil {
+        log.Fatal(err)
+    }
+
+    parser := CsvParser{
+        bufio.NewScanner(file),
+    }
 
     // err from os.Open
-	parsed, err := parser.ParseFile("/some/file.csv")
-
+	parsed, err := parser.Parse()
     
 	if err != nil {
 		panic(err)
