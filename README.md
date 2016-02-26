@@ -1,6 +1,15 @@
 # csv-parser
 
 Don't use this. Use go's built in csv parser https://golang.org/pkg/encoding/csv/
+HOWEVER this one is about 50x faster if you don't care as much about edge cases
+
+```shell
+go test -bench File
+PASS
+BenchmarkParseFile-4  	50000000	      22.1 ns/op
+BenchmarkGoParseFile-4	 1000000	      1021 ns/op
+ok  	github.com/justin-robinson/csv-parser	8.982s
+```
 
 handles comma delimited csv files and does not checked for escaped characters
 

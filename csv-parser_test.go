@@ -2,15 +2,21 @@ package csv_parser
 
 import (
 	"testing"
+	"encoding/csv"
+	"os"
+	"log"
+	"strings"
+	"bufio"
 )
-
-var parser = CsvParser{}
 
 var rawText = `"name","height","position","team"
 "Bill Murray","3.7 gophers","grounds keeper","Bushwood Country Club"
 "Jimmy Johnson","6","jsadklfadklvx","Cahbois"`
 
 func TestParseString(t *testing.T) {
+
+
+
 	cases := []struct {
 		in string
 		want [][]string
@@ -26,7 +32,10 @@ func TestParseString(t *testing.T) {
 	}
 
 	for _, c := range cases {
-		got := parser.ParseString(c.in)
+		parser := CsvParser{
+			bufio.NewScanner(strings.NewReader(c.in)),
+		}
+		got := parser.Parse()
 		for i, row := range got {
 			for j, value := range row {
 				if value != c.want[i][j]{
@@ -39,7 +48,19 @@ func TestParseString(t *testing.T) {
 
 func TestParseFile(t *testing.T) {
 
-	got, err := parser.ParseFile("sample.csv")
+	// open file
+	file, err:= os.Open("sample.csv")
+
+	// return err if we have one
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	parser := CsvParser{
+		bufio.NewScanner(file),
+	}
+
+	got := parser.Parse()
 
 	if err != nil {
 		t.Errorf("ParseFile %q", err)
@@ -109,14 +130,46 @@ func TestParseFile(t *testing.T) {
 
 func BenchmarkParseString(b *testing.B) {
 
+	parser := CsvParser{
+		bufio.NewScanner(strings.NewReader(rawText)),
+	}
+
 	for i := 0; i < b.N; i++ {
-		parser.ParseString(rawText)
+		parser.Parse()
 	}
 }
 
 func BenchmarkParseFile(b *testing.B) {
 
+	// open file
+	file, err:= os.Open("sample.csv")
+
+	// return err if we have one
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	parser := CsvParser{
+		bufio.NewScanner(file),
+	}
+
+	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		parser.ParseFile("sample_large.csv")
+		parser.Parse()
+	}
+}
+
+func BenchmarkGoParseFile(b *testing.B) {
+	file, err := os.Open("sample_large.csv")
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	r := csv.NewReader(file)
+
+	b.ResetTimer()
+	for i:=0; i < b.N; i++ {
+		r.ReadAll()
 	}
 }
