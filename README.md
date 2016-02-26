@@ -35,8 +35,7 @@ func main () {
         bufio.NewScanner(file),
     }
 
-    // err from os.Open
-	parsed, err := parser.Parse()
+    parsed := parser.Parse()
     
 	if err != nil {
 		panic(err)
