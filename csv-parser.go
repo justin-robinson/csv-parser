@@ -32,7 +32,7 @@ type csvParser struct {
 
 // Parse parses the scanner contents into a [][]string array containing
 // the data.  Where the first index is the row and the second being the value
-func (c *csvParser) Parse() ([][]string) {
+func (c *csvParser) Parse() [][]string {
 
 	// where are parsed lines will be stored
 	parsed := [][]string{}
